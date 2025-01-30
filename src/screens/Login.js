@@ -14,7 +14,8 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import Colors from "../constants/Colors";
-import { MaterialIcons } from "@expo/vector-icons"; // Importing icon library
+import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -31,7 +32,12 @@ const Login = ({ navigation }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <View style={styles.Container}>
+        <LinearGradient
+          style={styles.Container}
+          colors={["#C3CECF", "#DBD6F3", "#F2D7BC", "#C3CECF"]}
+          start={{ x: 1, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        >
           <View style={styles.loginContainer}>
             <View style={styles.loginContainerHeader}>
               <View>
@@ -135,7 +141,7 @@ const Login = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </LinearGradient>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
@@ -206,7 +212,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: 300,
     height: 40,
-    borderColor: Colors.lightGray,
+    borderColor: Colors.Green,
     borderRadius: 10,
     borderWidth: 1,
     paddingHorizontal: 10,
@@ -225,7 +231,7 @@ const styles = StyleSheet.create({
   loginButton: {
     justifyContent: "center",
     alignItems: "center",
-    alignSelf:"center",
+    alignSelf: "center",
     marginHorizontal: 20,
     marginTop: 15,
     marginBottom: 30,
@@ -243,7 +249,6 @@ const styles = StyleSheet.create({
   umworoziTextContainer: {
     //flexDirection:"row",
     marginHorizontal: 20,
-
   },
 
   umworoziText: {
@@ -255,7 +260,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
-    marginBottom:10,
+    marginBottom: 10,
     height: 30,
     marginLeft: -30,
   },
@@ -271,19 +276,18 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
 
-  signinInputContainerPassword:{
+  signinInputContainerPassword: {
     justifyContent: "flex-start",
     alignItems: "flex-start",
     alignSelf: "flex-start",
   },
 
-  signinText:{
-    color:Colors.dark
+  signinText: {
+    color: Colors.dark,
   },
-  passwordText:{
-    color:Colors.dark
-  }
-
+  passwordText: {
+    color: Colors.dark,
+  },
 });
 
 export default Login;
