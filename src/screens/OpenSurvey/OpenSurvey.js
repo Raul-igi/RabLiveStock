@@ -34,22 +34,6 @@ const IconLucide = ({ name, size = 24, color = "black" }) => {
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const data = [
-  { label: "All", value: "1" },
-  { label: "Isolate and Investigate", value: "2" },
-  { label: "Discharge", value: "3" },
-  { label: "Isolate and Investigate After Three Days", value: "4" },
-  {
-    label: "Test for Other Diseases(Malaria,Typhoid,Gastroenteritis",
-    value: "5",
-  },
-  { label: "Retake Test", value: "6" },
-  { label: "No Threat", value: "7" },
-  { label: "No Test Needed", value: "8" },
-  { label: "Error", value: "9" },
-  { label: "Linked to Testing", value: "10" },
-];
-
 const OpenSurvey = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -83,16 +67,7 @@ const OpenSurvey = ({ navigation }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <View>
-          <Headers />
-          <View style={styles.menuHamburger}>
-            <TouchableOpacity onPress={() => navigation.openDrawer()}>
-              <IconLucide name="AlignJustify" size={23} color={"black"} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-    
+        <Headers />
 
         <ScrollView>
           <View style={styles.Container}>
@@ -153,9 +128,7 @@ const OpenSurvey = ({ navigation }) => {
               {radioValue === "first" && (
                 <View style={styles.buttonConatainer}>
                   <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate("AddPatientCaseAssmentReview")
-                    }
+                    onPress={() => navigation.navigate("ContactInformation")}
                   >
                     <View style={styles.NextButton}>
                       <Text style={styles.NextButtonText}>Ohereza</Text>
@@ -196,7 +169,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 24,
-    backgroundColor: "yellow",
+    //backgroundColor: "yellow",
   },
 
   loginContainer: {
@@ -206,7 +179,7 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.9,
     borderRadius: 10,
     marginTop: 10,
-    backgroundColor: "red",
+    //backgroundColor: "red",
   },
 
   loginContainerHeader: {
@@ -232,13 +205,13 @@ const styles = StyleSheet.create({
   },
   pageHeaderText: {
     fontSize: windowHeight / 50,
-    fontWeight: "400",
+    fontWeight: "600",
     color: Colors.gray,
   },
 
   pageHeaderText2: {
-    fontSize: windowHeight / 40,
-    fontWeight: "300",
+    fontSize: windowHeight / 50,
+    fontWeight: "600",
     color: Colors.gray,
   },
 
@@ -351,14 +324,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 
-  menuHamburger: {
-    alignItems: "center",
-    marginTop: -24,
-    marginHorizontal: 20,
-    backgroundColor:Colors.solidWhite,
-    width: 30,
-  },
-
   screenHeader: {
     justifyContent: "center",
     alignItems: "flex-start",
@@ -366,8 +331,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   screenHeaderText: {
-    fontSize: windowHeight / 30,
-    fontWeight: "200",
+    fontSize: windowHeight / 50,
+    fontWeight: "600",
     color: Colors.lightBlue,
   },
 
@@ -392,7 +357,7 @@ const styles = StyleSheet.create({
   },
 
   screenQuestionText: {
-    fontSize: windowHeight / 45,
+    fontSize: windowHeight / 50,
     fontWeight: "600",
     color: Colors.dark,
   },

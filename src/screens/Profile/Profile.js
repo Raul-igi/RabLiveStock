@@ -28,208 +28,198 @@ const IconLucide = ({ name, size = 24, color = "black" }) => {
 };
 
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+const windowHeight = Dimensions.get("screen").height;
 
 const Profile = () => {
   const navigation = useNavigation();
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false); // State to toggle visibility
   const [focusedField, setFocusedField] = useState(null); // State to track focused field
-
+  const [showPasswordFields, setShowPasswordFields] = useState(false);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1 }}
-          >
-      <View style={styles.maincontainer}>
-        <View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <View style={styles.maincontainer}>
           <Headers />
-          <View style={styles.menuHamburger}>
-            <TouchableOpacity onPress={() => navigation.openDrawer()}>
-              <IconLucide name="AlignJustify" size={23} color={"black"} />
-            </TouchableOpacity>
-          </View>
-        </View>
 
-        <ScrollView>
-          <View style={styles.profileContainer}>
-            <View style={styles.pictureContainer}>
-              <Text>IR</Text>
-            </View>
+          <ScrollView>
+            <View style={styles.profileContainer}>
 
-            <View style={styles.userDescriptionContainer}>
-              <Text style={styles.userNameText1}>Raul Igiraneza</Text>
-            </View>
+              <View style={styles.pictureContainer}>
+                <Text>IR</Text>
+              </View>
 
-            <View style={styles.userDescriptionContainer}>
-              <Text style={styles.userNameText2}> @user3</Text>
-            </View>
+              <View style={styles.userDescriptionContainer}>
+                <Text style={styles.userNameText1}>Raul Igiraneza</Text>
+              </View>
 
-            <View style={styles.lineSeparator} />
+              <View style={styles.userDescriptionContainer}>
+                <Text style={styles.userNameText2}> @user3</Text>
+              </View>
 
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitleText}>User Information</Text>
-            </View>
+              <View style={styles.lineSeparator} />
 
-            <View style={styles.infoMainContainer}>
-              <View style={styles.infoContainer}>
-                <View style={styles.profileName}>
-                  <IconLucide name="User" size={23} color={Colors.Green} />
-                  <Text style={styles.profileNameText}>Name</Text>
+              <View style={styles.sectionTitleContainer}>
+                <Text style={styles.sectionTitleText}>User Information</Text>
+              </View>
+
+              <View style={styles.infoMainContainer}>
+                <View style={styles.infoContainer}>
+                  <View style={styles.profileName}>
+                    <IconLucide name="User" size={23} color={Colors.Green} />
+                    <Text style={styles.profileNameText}>Name</Text>
+                  </View>
+
+                  <View style={styles.profileName}>
+                    <Text style={styles.profileNameText}>Raul IGIRANEZA</Text>
+                  </View>
                 </View>
 
-                <View style={styles.profileName}>
-                  <Text style={styles.profileNameText}>Raul IGIRANEZA</Text>
+                <View style={styles.infoContainer}>
+                  <View style={styles.dateInfo}>
+                    <IconLucide
+                      name="CalendarClock"
+                      size={23}
+                      color={Colors.Green}
+                    />
+
+                    <Text style={styles.dateInfoText}>Created At</Text>
+                  </View>
+
+                  <View style={styles.dateInfo}>
+                    <Text style={styles.dateInfoText}>11/25/2024</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.lineSeparator} />
+
+              <View style={styles.sectionTitleContainer}>
+                <Text style={styles.sectionTitleText}>Location</Text>
+              </View>
+
+              <View style={styles.infoMainContainer}>
+                <View style={styles.infoContainer}>
+                  <View style={styles.locationName}>
+                    <IconLucide name="MapPin" size={23} color={Colors.Green} />
+                    <Text style={styles.locationNameText}>Name</Text>
+                  </View>
+
+                  <View style={styles.locationName}>
+                    <Text style={styles.locationNameText}>NYAGATARE</Text>
+                  </View>
+                </View>
+
+                <View style={styles.infoContainer}>
+                  <View style={styles.locationName}>
+                    <IconLucide
+                      name="SignpostBig"
+                      size={23}
+                      color={Colors.Green}
+                    />
+                    <Text style={styles.locationNameText}>Level</Text>
+                  </View>
+
+                  <View style={styles.locationName}>
+                    <Text style={styles.locationNameText}>DISTRICTS</Text>
+                  </View>
                 </View>
               </View>
 
-              <View style={styles.infoContainer}>
-                <View style={styles.dateInfo}>
-                  <IconLucide
-                    name="CalendarClock"
-                    size={23}
-                    color={Colors.Green}
+              <View style={styles.lineSeparator} />
+              <View style={styles.sectionTitleContainer}>
+                <Text style={styles.sectionTitleText}>Catchment Area</Text>
+              </View>
+
+              <View style={styles.infoMainContainer}>
+                <View style={styles.infoContainer}>
+                  <View style={styles.locationName}>
+                    <IconLucide name="MapPin" size={23} color={Colors.Green} />
+                    <Text style={styles.locationNameText}>Name</Text>
+                  </View>
+
+                  <View style={styles.locationName}>
+                    <Text style={styles.locationNameText}>NYAGATARE</Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.lineSeparator} />
+
+              <View style={styles.sectionTitleContainer}>
+                <Text style={styles.sectionTitleText}>Password Management</Text>
+              </View>
+
+              <TouchableOpacity onPress={() => setShowPasswordFields(true)}>
+                <View style={styles.changePasswordButton}>
+                  <Text style={styles.changePasswordButtonText}>
+                    Change Password
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {showPasswordFields && ( // Conditional rendering for password input and buttons
+              <>
+                <View style={styles.passwordInputWrapper}>
+                  <TextInput
+                    style={[
+                      styles.signinInputFilds,
+                      focusedField === "password" && { borderColor: "#0790CF" },
+                    ]}
+                    placeholder="New Password"
+                    placeholderTextColor={"black"}
+                    value={password}
+                    onChangeText={(text) => setPassword(text)}
+                    secureTextEntry={!passwordVisible}
+                    autoCapitalize="none"
+                    onFocus={() => setFocusedField("password")}
+                    onBlur={() => setFocusedField(null)}
                   />
-
-                  <Text style={styles.dateInfoText}>Created At</Text>
+                  <TouchableOpacity
+                    onPress={() => setPasswordVisible(!passwordVisible)}
+                    style={styles.eyeIcon}
+                  >
+                    <MaterialIcons
+                      name={passwordVisible ? "visibility" : "visibility-off"}
+                      size={22}
+                      color="gray"
+                      style={{ marginTop: 8 }}
+                    />
+                  </TouchableOpacity>
                 </View>
 
-                <View style={styles.dateInfo}>
-                  <Text style={styles.dateInfoText}>11/25/2024</Text>
+                <View style={styles.twoButtons}>
+                  <TouchableOpacity
+                    onPress={() => setShowPasswordFields(false)}
+                  >
+                    <View style={styles.changePasswordButton2}>
+                      <Text style={styles.changePasswordButtonText2}>
+                        cancel
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("AddPatientCase");
+                    }}
+                  >
+                    <View style={styles.changePasswordButton2}>
+                      <Text style={styles.changePasswordButtonText2}>
+                        Change Password2
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
                 </View>
-              </View>
-            </View>
-            <View style={styles.lineSeparator} />
-
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitleText}>Location</Text>
-            </View>
-
-            <View style={styles.infoMainContainer}>
-              <View style={styles.infoContainer}>
-                <View style={styles.locationName}>
-                  <IconLucide name="MapPin" size={23} color={Colors.Green} />
-                  <Text style={styles.locationNameText}>Name</Text>
-                </View>
-
-                <View style={styles.locationName}>
-                  <Text style={styles.locationNameText}>NYAGATARE</Text>
-                </View>
-              </View>
-
-              <View style={styles.infoContainer}>
-                <View style={styles.locationName}>
-                  <IconLucide
-                    name="SignpostBig"
-                    size={23}
-                    color={Colors.Green}
-                  />
-                  <Text style={styles.locationNameText}>Level</Text>
-                </View>
-
-                <View style={styles.locationName}>
-                  <Text style={styles.locationNameText}>DISTRICTS</Text>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.lineSeparator} />
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitleText}>Catchment Area</Text>
-            </View>
-
-            <View style={styles.infoMainContainer}>
-              <View style={styles.infoContainer}>
-                <View style={styles.locationName}>
-                  <IconLucide name="MapPin" size={23} color={Colors.Green} />
-                  <Text style={styles.locationNameText}>Name</Text>
-                </View>
-
-                <View style={styles.locationName}>
-                  <Text style={styles.locationNameText}>NYAGATARE</Text>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.lineSeparator} />
-
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitleText}>Password Management</Text>
-            </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("AddPatientCase");
-              }}
-            >
-              <View style={styles.changePasswordButton}>
-                <Text style={styles.changePasswordButtonText}>
-                  Change Password
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.passwordInputWrapper}>
-            <TextInput
-              style={[
-                styles.signinInputFilds,
-                focusedField === "password" && { borderColor: "#0790CF" },
-              ]}
-              placeholder="Enter your Password"
-              placeholderTextColor={"black"}
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              secureTextEntry={!passwordVisible}
-              autoCapitalize="none"
-              onFocus={() => setFocusedField("password")}
-              onBlur={() => setFocusedField(null)}
-            />
-            <TouchableOpacity
-              onPress={() => setPasswordVisible(!passwordVisible)}
-              style={styles.eyeIcon}
-            >
-              <MaterialIcons
-                name={passwordVisible ? "visibility" : "visibility-off"}
-                size={22}
-                color="gray"
-                style={{ marginTop: 8 }}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.twoButtons}>
-          <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("AddPatientCase");
-              }}
-            >
-              <View style={styles.changePasswordButton}>
-                <Text style={styles.changePasswordButtonText}>
-                  Change Password
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("AddPatientCase");
-              }}
-            >
-              <View style={styles.changePasswordButton}>
-                <Text style={styles.changePasswordButtonText}>
-                  Change Password
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+              </>
+            )}
+          </ScrollView>
 
           
-        </ScrollView>
-
-        <Menu />
-      </View>
+        </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
@@ -252,13 +242,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
-    backgroundColor: Colors.solidWhite,
+    //backgroundColor: Colors.solidWhite,
     marginHorizontal: 20,
     height: windowHeight * 0.6,
     borderRadius: 10,
-    marginTop: 30,
-    borderWidth: 1,
-    borderColor: Colors.Green,
+    marginTop: 50,
+    //borderWidth: 1,
+    //borderColor: Colors.Green,
   },
 
   pictureContainer: {
@@ -272,6 +262,7 @@ const styles = StyleSheet.create({
     width: 70,
     borderWidth: 1,
     borderColor: Colors.Green,
+    //marginTop:30
   },
 
   userDescriptionContainer: {
@@ -351,7 +342,6 @@ const styles = StyleSheet.create({
   },
 
   changePasswordButton: {
-    alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
     height: windowHeight * 0.05,
@@ -360,7 +350,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: Colors.Green,
-    marginTop: 50,
+    
   },
 
   changePasswordButtonText: {
@@ -369,15 +359,34 @@ const styles = StyleSheet.create({
     fontWeight: 700,
   },
 
-  passwordInputWrapper: {
-    flexDirection: "row",
+  changePasswordButton2: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 50,
+    height: windowHeight * 0.05,
+    width: windowWidth * 0.39,
+    backgroundColor: Colors.solidWhite,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.Green,
+    marginTop: 10,
+    
+  },
+
+  changePasswordButtonText2: {
+    color: Colors.Green,
+    fontSize: 14,
+    fontWeight: 700,
+  },
+
+  passwordInputWrapper: {
+    //flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: windowHeight *0.04,
   },
 
   signinInputFilds: {
-    marginTop: 10,
+    //marginTop: 10,
     width: 300,
     height: 40,
     borderColor: Colors.lightGray,
@@ -388,16 +397,18 @@ const styles = StyleSheet.create({
 
   eyeIcon: {
     position: "absolute",
-    right:50
+    right: 50,
   },
 
-  twoButtons:{
-    justifyContent:"center",
-    alignItems:"center",
-    marginHorizontal:20,
-    flexDirection:"row",
-    gap:10
-  }
+  twoButtons: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 20,
+    flexDirection: "row",
+    //marginTop:40,
+    gap: 10,
+    
+  },
 });
 
 export default Profile;

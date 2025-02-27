@@ -13,8 +13,6 @@ import RoutineCare from "./src/screens/RoutineCare/RoutineCare";
 import OfflineData from "./src/screens/OfflineData/OfflineData";
 import * as LucideIcons from "lucide-react-native";
 import AddPatientCase from "./src/screens/AddPatientCase/AddPatientCase";
-import AddPatientCaseBleedingAssessment from "./src/screens/AddPatientCase/AddPatientCaseBleedingAssessment";
-import AddPatientCaseAssmentReview from "./src/screens/AddPatientCase/AddPatientCaseAssmentReview";
 import OpenSurvey from "./src/screens/OpenSurvey/OpenSurvey";
 import Profile from "./src/screens/Profile/Profile";
 
@@ -54,7 +52,11 @@ export default function App() {
           options={{ headerShown: false }} // Hide header for Auth Stack
         />
         <Stack.Screen name="AddPatientCase" component={AddPatientCase} />
-        <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }}/>
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="OpenSurvey"
           component={OpenSurvey}
@@ -63,6 +65,12 @@ export default function App() {
         <Stack.Screen
           name="Login"
           component={Login}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="ContactInformation"
+          component={ContactInformation}
           options={{ headerShown: false }}
         />
 
@@ -96,7 +104,7 @@ export default function App() {
                 }}
               />
 
-               <Drawer.Screen
+              <Drawer.Screen
                 name="OverView"
                 component={Dashboard}
                 options={{
@@ -111,58 +119,7 @@ export default function App() {
                     //color: "black",
                   },
                 }}
-              /> 
-
-              {/* <Drawer.Screen
-                name="Health Facilities"
-                component={HealthFacilities}
-                options={{
-                  drawerIcon: ({ focused, size }) => (
-                    <IconLucide
-                      name="Hospital"
-                      size={23}
-                      color={focused ? "#3E9A32" : "#000000"}
-                    />
-                  ),
-                  drawerLabelStyle: {
-                    //color: "black",
-                  },
-                }}
-              /> */}
-
-              {/* <Drawer.Screen
-                name="Roles & Permissions"
-                component={RolesAndPermissions}
-                options={{
-                  drawerIcon: ({ focused, size }) => (
-                    <IconLucide
-                      name="ShieldHalf"
-                      size={23}
-                      color={focused ? "#3E9A32" : "#000000"}
-                    />
-                  ),
-                  drawerLabelStyle: {
-                    //color: "black",
-                  },
-                }}
-              /> */}
-
-              {/* <Drawer.Screen
-                name="Routine care"
-                component={RoutineCare}
-                options={{
-                  drawerIcon: ({ focused, size }) => (
-                    <IconLucide
-                      name="ShieldHalf"
-                      size={23}
-                      color={focused ? "#3E9A32" : "#000000"}
-                    />
-                  ),
-                  drawerLabelStyle: {
-                    //color: "black",
-                  },
-                }}
-              /> */}
+              />
 
               <Drawer.Screen
                 name="Offline Data"
@@ -190,24 +147,16 @@ export default function App() {
               />
 
               <Drawer.Screen
-                name="AddPatientCaseBleedingAssessment"
-                component={AddPatientCaseBleedingAssessment}
-                options={{
-                  drawerItemStyle: { display: "none" }, // Hides from Drawer
-                }}
-              />
-
-              <Drawer.Screen
-                name="AddPatientCaseAssmentReview"
-                component={AddPatientCaseAssmentReview}
-                options={{
-                  drawerItemStyle: { display: "none" }, // Hides from Drawer
-                }}
-              />
-
-              <Drawer.Screen
                 name="Profile"
                 component={Profile}
+                options={{
+                  drawerItemStyle: { display: "none" }, // Hides from Drawer
+                }}
+              />
+
+              <Drawer.Screen
+                name="OpenSurvey"
+                component={OpenSurvey}
                 options={{
                   drawerItemStyle: { display: "none" }, // Hides from Drawer
                 }}

@@ -37,6 +37,9 @@ const OpenSurveyOya = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
+  const [totalChickens, setTotalChickens] =useState("");
+  const [sickChickens,setSickChickens] =useState("");
+  const [deadChickens,setDeadChickens]= useState("");
   const [focusedField, setFocusedField] = useState(null);
   const [value, setValue] = useState(null);
 
@@ -61,10 +64,7 @@ const OpenSurveyOya = ({ navigation }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
+     
         <View style={styles.Container}>
           <View style={styles.loginContainer}>
             <View style={styles.pageHeader2}>
@@ -109,8 +109,8 @@ const OpenSurveyOya = ({ navigation }) => {
                   ]}
                   placeholder="Irindi zina"
                   placeholderTextColor={Colors.gray}
-                  value={firstName}
-                  onChangeText={(text) => setFirstName(text)}
+                  value={lastName}
+                  onChangeText={(text) => setLastName(text)}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   onFocus={() => setFocusedField("lastName")}
@@ -269,15 +269,15 @@ const OpenSurveyOya = ({ navigation }) => {
                 <TextInput
                   style={[
                     styles.signinInputFilds,
-                    focusedField === "firstName" && { borderColor: "#0790CF" },
+                    focusedField === "totalChickens" && { borderColor: "#0790CF" },
                   ]}
                   placeholder=""
                   placeholderTextColor={Colors.gray}
-                  value={firstName}
-                  onChangeText={(text) => setFirstName(text)}
+                  value={totalChickens}
+                  onChangeText={(text) => setTotalChickens(text)}
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  onFocus={() => setFocusedField("firstName")}
+                  onFocus={() => setFocusedField("totalChickens")}
                   onBlur={() => setFocusedField(null)}
                 />
               </View>
@@ -292,15 +292,15 @@ const OpenSurveyOya = ({ navigation }) => {
                 <TextInput
                   style={[
                     styles.signinInputFilds,
-                    focusedField === "firstName" && { borderColor: "#0790CF" },
+                    focusedField === "sickChickens" && { borderColor: "#0790CF" },
                   ]}
                   placeholder=""
                   placeholderTextColor={Colors.gray}
-                  value={firstName}
-                  onChangeText={(text) => setFirstName(text)}
+                  value={sickChickens}
+                  onChangeText={(text) => setSickChickens(text)}
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  onFocus={() => setFocusedField("firstName")}
+                  onFocus={() => setFocusedField("sickChickens")}
                   onBlur={() => setFocusedField(null)}
                 />
               </View>
@@ -315,22 +315,22 @@ const OpenSurveyOya = ({ navigation }) => {
                 <TextInput
                   style={[
                     styles.signinInputFilds,
-                    focusedField === "firstName" && { borderColor: "#0790CF" },
+                    focusedField === "deadChickens" && { borderColor: "#0790CF" },
                   ]}
                   placeholder=""
                   placeholderTextColor={Colors.gray}
-                  value={firstName}
-                  onChangeText={(text) => setFirstName(text)}
+                  value={deadChickens}
+                  onChangeText={(text) => setDeadChickens(text)}
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  onFocus={() => setFocusedField("firstName")}
+                  onFocus={() => setFocusedField("deadChickens")}
                   onBlur={() => setFocusedField(null)}
                 />
               </View>
             </View>
           </View>
         </View>
-      </KeyboardAvoidingView>
+    
     </TouchableWithoutFeedback>
   );
 };
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     //backgroundColor: Colors.solidWhite,
     width: windowWidth * 0.9,
     borderRadius: 10,
-    backgroundColor:"yellow"
+    //backgroundColor:"yellow"
   },
 
   loginContainerHeader: {
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-",
     marginTop: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 20,
   },
   pageHeaderText2: {
     fontSize: windowHeight / 45,

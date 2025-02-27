@@ -162,15 +162,6 @@ const RoutineCareDT = () => {
         </LinearGradient>
 
         <View style={styles.buttonContainer}>
-          {/* <TouchableOpacity onPress={startRotation}>
-          <View style={styles.buttonWithIcon}>
-            <Text style={styles.buttonWithIconText}>Reset Filters</Text>
-            <Animated.View style={rotateStyle}>
-              <IconLucide name="RefreshCcw" size={20} color={Colors.Green} />
-            </Animated.View>
-          </View>
-        </TouchableOpacity> */}
-
           <TouchableOpacity onPress={() => navigation.navigate("OpenSurvey")}>
             <View style={styles.buttons}>
               <Text style={styles.buttonText}>New Survey</Text>
@@ -191,135 +182,11 @@ const RoutineCareDT = () => {
         </View>
       </View>
 
-      {/* <ScrollView horizontal>
-        <ScrollView>
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title style={{ width: 50 }}>#</DataTable.Title>
-              <DataTable.Title style={{ width: 150 }}>Date</DataTable.Title>
-              <DataTable.Title style={{ width: 150 }}>Names</DataTable.Title>
-              <DataTable.Title style={{ width: 120 }}>
-                Health Facility
-              </DataTable.Title>
-              <DataTable.Title style={{ width: 150 }}>Location</DataTable.Title>
-              <DataTable.Title style={{ width: 100 }}>Status</DataTable.Title>
-              <DataTable.Title style={{ width: 100, marginLeft: 100 }}>
-                Actions
-              </DataTable.Title>
-            </DataTable.Header>
-
-            {items.slice(from, to).map((item) => (
-              <DataTable.Row key={item.key}>
-                <DataTable.Cell style={{ width: 50 }}>
-                  {item.key}
-                </DataTable.Cell>
-                <DataTable.Cell style={{ width: 150 }}>
-                  {item.date}
-                </DataTable.Cell>
-                <DataTable.Cell style={{ width: 150 }}>
-                  {item.name}
-                </DataTable.Cell>
-                <DataTable.Cell style={{ width: 120 }}>
-                  {item.healthFacility}
-                </DataTable.Cell>
-                <DataTable.Cell style={{ width: 150 }}>
-                  {item.location}
-                </DataTable.Cell>
-
-                <DataTable.Cell style={{ width: 100 }}>
-                  <View>
-                    <Dropdown
-                      containerStyle={{
-                        borderRadius: 10,
-                        backgroundColor: Colors.pageBackgroundColor,
-                        padding: 10,
-                      }}
-                      style={[
-                        styles.filterdropdown,
-                        focusedField === item.key && { borderColor: "#0790CF" },
-                      ]}
-                      placeholderStyle={styles.dropDownPlaceHolderStyle}
-                      selectedTextStyle={styles.selectedTextStyle}
-                      inputSearchStyle={styles.inputSearchStyle}
-                      data={data}
-                      maxHeight={300}
-                      labelField="label"
-                      valueField="value"
-                      placeholder="Filter by status"
-                      value={rowValues[item.key] || null} // Use row-specific value
-                      onChange={(selectedItem) => {
-                        setRowValues((prev) => ({
-                          ...prev,
-                          [item.key]: selectedItem.value, // Set value for this specific row
-                        }));
-                      }}
-                      renderItem={(dropdownItem) =>
-                        renderItem(
-                          dropdownItem,
-                          dropdownItem.value === rowValues[item.key]
-                        )
-                      }
-                      onFocus={() => setFocusedField(item.key)}
-                      onBlur={() => setFocusedField(null)}
-                    />
-                  </View>
-                </DataTable.Cell>
-                <DataTable.Cell style={{ width: 100, marginLeft: 100 }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <TouchableOpacity
-                      style={{ marginRight: 10 }}
-                      onPress={() =>
-                        console.log(`Edit action for ${item.name}`)
-                      }
-                    >
-                      <IconLucide
-                        name="Eye"
-                        size={20}
-                        color={Colors.lightBlue}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() =>
-                        console.log(`Delete action for ${item.name}`)
-                      }
-                    >
-                      <IconLucide
-                        name="History"
-                        size={16}
-                        color={Colors.lightBlue}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </DataTable.Cell>
-              </DataTable.Row>
-            ))}
-
-            <DataTable.Pagination
-              page={page}
-              numberOfPages={Math.ceil(items.length / itemsPerPage)}
-              onPageChange={(page) => setPage(page)}
-              label={`${from + 1}-${to} of ${items.length}`}
-              numberOfItemsPerPageList={numberOfItemsPerPageList}
-              numberOfItemsPerPage={itemsPerPage}
-              onItemsPerPageChange={onItemsPerPageChange}
-              showFastPaginationControls
-              selectPageDropdownLabel={"Rows per page"}
-            />
-          </DataTable>
-        </ScrollView>
-      </ScrollView> */}
-
       <View style={styles.accordionMainContainer}>
         <List.Section title="Review Data">
           <List.Accordion
             style={styles.accordionContainer}
-            title="Chris Kwizera"
+            title="Mwami Damien"
             titleStyle={{ fontSize: windowHeight / 55 }}
             backgroundColor="red"
             left={(props) => (
@@ -541,7 +408,6 @@ const RoutineCareDT = () => {
               )}
             />
           </List.Accordion>
-
         </List.Section>
       </View>
     </View>
@@ -584,20 +450,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 
-  // buttonWithIcon: {
-  //   flexDirection: "row",
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   height: windowHeight * 0.05,
-  //   width: windowWidth * 0.35,
-  //   backgroundColor: Colors.solidWhite,
-  //   borderColor: Colors.Green,
-  //   borderWidth: 1,
-  //   borderRadius: 10,
-  //   padding:10,
-  //   gap:10
-
-  // },
+ 
 
   buttonWithIconText: {
     fontSize: 15,
@@ -645,12 +498,10 @@ const styles = StyleSheet.create({
   },
 
   accordionRow: {
-    //backgroundColor: "#e2eafc",
     paddingLeft: -40,
     marginHorizontal: 10,
     borderRadius: 5,
-    //borderWidth: 1,
-    //borderColor: "#d7e3fc",
+   
   },
 
   continersGraber: {
@@ -676,9 +527,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 10,
     borderWidth: 1,
-    borderColor:Colors.Green,
-    borderRadius:10,
-    marginBottom:windowHeight *0.2
+    borderColor: Colors.Green,
+    borderRadius: 10,
+    marginBottom: windowHeight * 0.2,
   },
 
   accordionContainer: {
@@ -690,7 +541,7 @@ const styles = StyleSheet.create({
     borderColor: "#d7e3fc",
   },
 
-  //dropdown styling section
+
 });
 
 export default RoutineCareDT;

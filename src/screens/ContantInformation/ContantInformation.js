@@ -58,14 +58,7 @@ const ContactInformation = () => {
    
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.maincontainer}>
-        <View style={styles.menuHamburgerContainer}>
           <Headers />
-          <View style={styles.menuHamburger}>
-            <TouchableOpacity onPress={() => navigation.openDrawer()}>
-              <IconLucide name="AlignJustify" size={23} color={Colors.solidWhite} />
-            </TouchableOpacity>
-          </View>
-        </View>
         <ScrollView>
         <ContactInformationDT />
         </ScrollView>

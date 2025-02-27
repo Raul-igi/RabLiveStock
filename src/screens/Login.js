@@ -38,7 +38,7 @@ const Login = ({ navigation }) => {
           start={{ x: 1, y: 0 }}
           end={{ x: 0, y: 1 }}
         >
-          <View style={styles.loginContainer}>
+          <View >
             <View style={styles.loginContainerHeader}>
               <View>
                 <Image
@@ -76,7 +76,7 @@ const Login = ({ navigation }) => {
                     focusedField === "username" && { borderColor: "#0790CF" },
                   ]}
                   placeholder="Enter your Username"
-                  placeholderTextColor={Colors.lightGray}
+                  placeholderTextColor={Colors.dark}
                   value={userName}
                   onChangeText={(text) => setUserName(text)}
                   keyboardType="email-address"
@@ -99,7 +99,7 @@ const Login = ({ navigation }) => {
                     focusedField === "password" && { borderColor: "#0790CF" },
                   ]}
                   placeholder="Enter your Password"
-                  placeholderTextColor={Colors.lightGray}
+                  placeholderTextColor={Colors.dark}
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                   secureTextEntry={!passwordVisible}
