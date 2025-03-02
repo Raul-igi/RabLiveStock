@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Animated,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Colors from "../../constants/Colors";
 import { DataTable, List } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
@@ -14,6 +14,8 @@ import { Dropdown } from "react-native-element-dropdown";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as LucideIcons from "lucide-react-native";
+import apiService from "../apiService/apiService";
+import Modal from "react-native-modal";
 
 const IconLucide = ({ name, size = 24, color = "black" }) => {
   const LucideIcon = LucideIcons[name];
@@ -41,11 +43,89 @@ const data = [
   { label: "Linked To Testing", value: "9" },
 ];
 
-const RoutineCareDT = () => {
+const ContactInformationDT = () => {
   const navigation = useNavigation();
   const [focusedField, setFocusedField] = useState(null);
-  // Updated to use an object to track values for each row
-  const [rowValues, setRowValues] = useState({}); // Track dropdown values for each row
+
+  const [loading, setLoading] = useState({});
+  const [casesList, setCasesList] = useState([]);
+
+  const [show, setShow] = useState(false);
+  const [selectedCase, setSelectedCase] = useState(null);
+
+  useEffect(() => {
+    const fetchPatientCaseListData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch data from API
+        const response = await apiService.fetchPatientCaseList();
+       // console.log("nsoro sebihogo", JSON.stringify(response));
+        // Handle different API response formats
+        const responseData = response.data?.data || response.data;
+        if (!responseData || !Array.isArray(responseData)) {
+          throw new Error("Invalid API response format");
+        }
+
+        //console.log("Cases Data:", responseData);
+
+        // Format data
+
+        setCasesList(responseData);
+        // console.log("Formatted Cases:", responseData);
+      } catch (error) {
+        console.error("Error fetching patient cases:", error.toString());
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPatientCaseListData();
+  }, []);
+
+  const fetchCaseDetailsById = async (caseId) => {
+    try {
+      const response = await apiService.fetchCaseById(caseId);
+      console.log(response);
+      if (response.success) {
+        toggleFirstModal(response.data);
+      }
+    } catch (error) {
+      console.error(
+        `Error fetching details for case ${caseId}:`,
+        error.toString()
+      );
+      return null; // Return null if fetching fails
+    }
+  };
+
+  const toggleFirstModal = (caseDetails = null) => {
+    if (caseDetails) {
+      console.log(caseDetails);
+      setSelectedCase(caseDetails);
+      setShow(true);
+    } else {
+      setShow(false);
+      setSelectedCase(null);
+    }
+  };
+
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+
+    // Extract components
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Months are zero-based
+    const year = date.getFullYear();
+
+    // Format time in 12-hour format with AM/PM
+    const hours = date.getHours() % 12 || 12; // Convert 0 to 12 for AM/PM format
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    const ampm = date.getHours() >= 12 ? "PM" : "AM";
+
+    return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds} ${ampm}`;
+  };
 
   const renderItem = (item, isSelected) => {
     return (
@@ -65,87 +145,6 @@ const RoutineCareDT = () => {
     );
   };
 
-  //Icon rotation config section
-  const rotation = useRef(new Animated.Value(0)).current;
-
-  const startRotation = () => {
-    rotation.setValue(0); // Reset the rotation to start from 0
-    Animated.timing(rotation, {
-      toValue: 1, // Complete one full rotation
-      duration: 500, // Animation duration in milliseconds
-      useNativeDriver: true, // Use native driver for better performance
-    }).start();
-  };
-
-  const rotateInterpolate = rotation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
-  });
-
-  const rotateStyle = {
-    transform: [{ rotate: rotateInterpolate }],
-  };
-  //End of Icon rotation config section
-
-  //pagination section
-
-  const [page, setPage] = React.useState(0);
-  const [numberOfItemsPerPageList] = React.useState([2, 3, 4]);
-  const [itemsPerPage, onItemsPerPageChange] = React.useState(
-    numberOfItemsPerPageList[0]
-  );
-
-  //End of pagination section
-
-  const [items] = React.useState([
-    {
-      key: 1,
-      name: "Rusekeza Simon Pierre",
-      healthFacility: "Test Cs",
-      location: "KIGALI,Gasabo,Jabana",
-      status: "NO THREAT",
-      action: "icon icon",
-      date: "10/02/2025",
-    },
-    {
-      key: 2,
-
-      name: "Nsoro Raul",
-      healthFacility: "Test Cs",
-      location: "KIGALI,Gasabo,Jabana",
-      status: "NO THREAT",
-      action: "icon icon",
-      date: "10/02/2025",
-    },
-    {
-      key: 3,
-      name: "John Karake",
-      healthFacility: "Test Cs",
-      location: "KIGALI,Gasabo,Jabana",
-      status: "NO THREAT",
-      action: "icon icon",
-      date: "10/02/2025",
-    },
-    {
-      key: 4,
-      name: "Chris Muhawenimana",
-      healthFacility: "Test Cs",
-      location: "KIGALI,Gasabo,Jabana",
-      status: "NO THREAT",
-      action: "icon icon",
-      date: "10/02/2025",
-    },
-  ]);
-
-  const from = page * itemsPerPage;
-  const to = Math.min((page + 1) * itemsPerPage, items.length);
-
-  React.useEffect(() => {
-    setPage(0);
-  }, [itemsPerPage]);
-
-  const [expanded, setExpanded] = React.useState(true);
-  const handlePress = () => setExpanded(!expanded);
   return (
     <View>
       <View style={styles.continersGraber}>
@@ -183,232 +182,171 @@ const RoutineCareDT = () => {
       </View>
 
       <View style={styles.accordionMainContainer}>
-        <List.Section title="Review Data">
-          <List.Accordion
-            style={styles.accordionContainer}
-            title="Mwami Damien"
-            titleStyle={{ fontSize: windowHeight / 55 }}
-            backgroundColor="red"
-            left={(props) => (
-              <List.Icon {...props} icon="table" color="#3E9A32" />
-            )}
-          >
-            <List.Item
-              style={styles.accordionRow}
-              title="Phone Number: 0784694634"
-            />
-            <List.Item
-              style={styles.accordionRow}
-              title="Location: IBURASIRAZUBA , NYAGATARE , MUKAMA , Bufunda , Kibihanga"
-            />
-            <List.Item style={styles.accordionRow} title="Total Chickens: 34" />
-            <List.Item style={styles.accordionRow} title="Sick Chickens: 12" />
-            <List.Item style={styles.accordionRow} title="Dead Chickens: 11" />
-            <List.Item
-              style={styles.accordionRow}
-              title="Actions:"
-              right={(props) => (
-                <TouchableOpacity
-                  onPress={() => console.log("View action pressed")}
-                >
-                  <IconLucide name="Eye" size={20} color={Colors.lightBlue} />
-                </TouchableOpacity>
+        <List.Section title="Data Table">
+          {casesList?.map((caseDetails) => (
+            <List.Accordion
+              style={styles.accordionContainer}
+              title={`${caseDetails.casePersonalInfo.firstName} ${caseDetails.casePersonalInfo.lastName}`}
+              titleStyle={{ fontSize: windowHeight / 55 }}
+              backgroundColor="red"
+              left={(props) => (
+                <List.Icon {...props} icon="table" color="#0790CF" />
               )}
-            />
-          </List.Accordion>
+            >
+              <List.Item
+                style={styles.accordionRow}
+                title={`Date: ${
+                  caseDetails.casePersonalInfo.createdAt.split("T")[0]
+                }`}
+              />
 
-          <List.Accordion
-            style={styles.accordionContainer}
-            title="Kwizera Chris"
-            titleStyle={{ fontSize: windowHeight / 55 }}
-            left={(props) => (
-              <List.Icon {...props} icon="table" color="#3E9A32" />
-            )}
-          >
-            <List.Item
-              style={styles.accordionRow}
-              title="Phone Number: 0784694634"
-            />
-            <List.Item
-              style={styles.accordionRow}
-              title="Location: IBURASIRAZUBA , NYAGATARE , MUKAMA , Bufunda , Kibihanga"
-            />
-            <List.Item style={styles.accordionRow} title="Total Chickens: 34" />
-            <List.Item style={styles.accordionRow} title="Sick Chickens: 12" />
-            <List.Item style={styles.accordionRow} title="Dead Chickens: 11" />
-            <List.Item
-              style={styles.accordionRow}
-              title="Actions:"
-              right={(props) => (
-                <TouchableOpacity
-                  onPress={() => console.log("View action pressed")}
-                >
-                  <IconLucide name="Eye" size={20} color={Colors.lightBlue} />
-                </TouchableOpacity>
-              )}
-            />
-          </List.Accordion>
+              <List.Item
+                style={styles.accordionRow}
+                title={`Phone Number: ${caseDetails.casePersonalInfo.telephone}`}
+              />
 
-          <List.Accordion
-            style={styles.accordionContainer}
-            title="Jonathan Gwiza"
-            titleStyle={{ fontSize: windowHeight / 55 }}
-            left={(props) => (
-              <List.Icon {...props} icon="table" color="#3E9A32" />
-            )}
-          >
-            <List.Item
-              style={styles.accordionRow}
-              title="Phone Number: 0784694634"
-            />
-            <List.Item
-              style={styles.accordionRow}
-              title="Location: IBURASIRAZUBA , NYAGATARE , MUKAMA , Bufunda , Kibihanga"
-            />
-            <List.Item style={styles.accordionRow} title="Total Chickens: 34" />
-            <List.Item style={styles.accordionRow} title="Sick Chickens: 12" />
-            <List.Item style={styles.accordionRow} title="Dead Chickens: 11" />
-            <List.Item
-              style={styles.accordionRow}
-              title="Actions:"
-              right={(props) => (
-                <TouchableOpacity
-                  onPress={() => console.log("View action pressed")}
-                >
-                  <IconLucide name="Eye" size={20} color={Colors.lightBlue} />
-                </TouchableOpacity>
-              )}
-            />
-          </List.Accordion>
+              <List.Item
+                style={styles.accordionRow}
+                title={`Location: ${caseDetails?.selectedCase?.fullLocationName}
+}`}
+              />
 
-          <List.Accordion
-            style={styles.accordionContainer}
-            title="Kalisa Joe"
-            titleStyle={{ fontSize: windowHeight / 55 }}
-            left={(props) => (
-              <List.Icon {...props} icon="table" color="#3E9A32" />
-            )}
-          >
-            <List.Item
-              style={styles.accordionRow}
-              title="Phone Number: 0784694634"
-            />
-            <List.Item
-              style={styles.accordionRow}
-              title="Location: IBURASIRAZUBA , NYAGATARE , MUKAMA , Bufunda , Kibihanga"
-            />
-            <List.Item style={styles.accordionRow} title="Total Chickens: 34" />
-            <List.Item style={styles.accordionRow} title="Sick Chickens: 12" />
-            <List.Item style={styles.accordionRow} title="Dead Chickens: 11" />
-            <List.Item
-              style={styles.accordionRow}
-              title="Actions:"
-              right={(props) => (
-                <TouchableOpacity
-                  onPress={() => console.log("View action pressed")}
-                >
-                  <IconLucide name="Eye" size={20} color={Colors.lightBlue} />
-                </TouchableOpacity>
-              )}
-            />
-          </List.Accordion>
+              <List.Item
+                style={styles.accordionRow}
+                //title={`Status: ${caseDetails.status.name}`}
+              />
 
-          <List.Accordion
-            style={styles.accordionContainer}
-            title="Musinga Didie"
-            titleStyle={{ fontSize: windowHeight / 55 }}
-            left={(props) => (
-              <List.Icon {...props} icon="table" color="#3E9A32" />
-            )}
-          >
-            <List.Item
-              style={styles.accordionRow}
-              title="Phone Number: 0784694634"
-            />
-            <List.Item
-              style={styles.accordionRow}
-              title="Location: IBURASIRAZUBA , NYAGATARE , MUKAMA , Bufunda , Kibihanga"
-            />
-            <List.Item style={styles.accordionRow} title="Total Chickens: 34" />
-            <List.Item style={styles.accordionRow} title="Sick Chickens: 12" />
-            <List.Item style={styles.accordionRow} title="Dead Chickens: 11" />
-            <List.Item
-              style={styles.accordionRow}
-              title="Actions:"
-              right={(props) => (
-                <TouchableOpacity
-                  onPress={() => console.log("View action pressed")}
-                >
-                  <IconLucide name="Eye" size={20} color={Colors.lightBlue} />
-                </TouchableOpacity>
-              )}
-            />
-          </List.Accordion>
-
-          <List.Accordion
-            style={styles.accordionContainer}
-            title="Umwali Eliane"
-            titleStyle={{ fontSize: windowHeight / 55 }}
-            left={(props) => (
-              <List.Icon {...props} icon="table" color="#3E9A32" />
-            )}
-          >
-            <List.Item
-              style={styles.accordionRow}
-              title="Phone Number: 0784694634"
-            />
-            <List.Item
-              style={styles.accordionRow}
-              title="Location: IBURASIRAZUBA , NYAGATARE , MUKAMA , Bufunda , Kibihanga"
-            />
-            <List.Item style={styles.accordionRow} title="Total Chickens: 34" />
-            <List.Item style={styles.accordionRow} title="Sick Chickens: 12" />
-            <List.Item style={styles.accordionRow} title="Dead Chickens: 11" />
-            <List.Item
-              style={styles.accordionRow}
-              title="Actions:"
-              right={(props) => (
-                <TouchableOpacity
-                  onPress={() => console.log("View action pressed")}
-                >
-                  <IconLucide name="Eye" size={20} color={Colors.lightBlue} />
-                </TouchableOpacity>
-              )}
-            />
-          </List.Accordion>
-
-          <List.Accordion
-            style={styles.accordionContainer}
-            title="John Alexis"
-            titleStyle={{ fontSize: windowHeight / 55 }}
-            left={(props) => (
-              <List.Icon {...props} icon="table" color="#3E9A32" />
-            )}
-          >
-            <List.Item
-              style={styles.accordionRow}
-              title="Phone Number: 0784694634"
-            />
-            <List.Item
-              style={styles.accordionRow}
-              title="Location: IBURASIRAZUBA , NYAGATARE , MUKAMA , Bufunda , Kibihanga"
-            />
-            <List.Item style={styles.accordionRow} title="Total Chickens: 34" />
-            <List.Item style={styles.accordionRow} title="Sick Chickens: 12" />
-            <List.Item style={styles.accordionRow} title="Dead Chickens: 11" />
-            <List.Item
-              style={styles.accordionRow}
-              title="Actions:"
-              right={(props) => (
-                <TouchableOpacity
-                  onPress={() => console.log("View action pressed")}
-                >
-                  <IconLucide name="Eye" size={20} color={Colors.lightBlue} />
-                </TouchableOpacity>
-              )}
-            />
-          </List.Accordion>
+              <List.Item
+                style={styles.accordionRow}
+                title="Actions:"
+                right={(props) => (
+                  <TouchableOpacity
+                    style={styles.viewStatus}
+                    onPress={() => fetchCaseDetailsById(caseDetails.id)}
+                  >
+                    <IconLucide name="Eye" size={20} color={Colors.lightBlue} />
+                  </TouchableOpacity>
+                )}
+              />
+            </List.Accordion>
+          ))}
         </List.Section>
+
+        <Modal
+          isVisible={show}
+          backdropOpacity={0.5} // Disable the black background
+          onBackdropPress={() => toggleFirstModal()}
+          //animationType="fade"
+        >
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalHeaderText}>Chicken Data Details</Text>
+            </View>
+
+            <ScrollView>
+              {selectedCase ? (
+                <>
+                  <View style={styles.modalSubHeader}>
+                    <Text style={styles.modalSubHeaderText}>
+                      View data for {selectedCase.casePersonalInfo?.firstName}
+                    </Text>
+                  </View>
+
+                  <View style={styles.userDescription}>
+                    <Text style={styles.userTextDescription}>
+                      Farmer's Name
+                    </Text>
+                    <Text style={styles.userTextDescription}>
+                      {selectedCase.casePersonalInfo?.firstName}{" "}
+                      {selectedCase.casePersonalInfo?.lastName}
+                    </Text>
+                  </View>
+
+                  <View style={styles.separator} />
+
+                  <View style={styles.userDescription}>
+                    <Text style={styles.userTextDescription}>Phone Number</Text>
+                    <Text style={styles.userTextDescription}>
+                      {selectedCase.casePersonalInfo?.telephone}
+                    </Text>
+                  </View>
+
+                  <View style={styles.separator} />
+
+                  <View style={styles.userDescription}>
+                    <Text style={styles.userTextDescription}>Location</Text>
+                    <Text style={styles.userTextDescription}>
+                      {selectedCase?.fullLocationName?.split(">")[1] ||
+                        "Unknown"}
+                    </Text>
+                  </View>
+
+                  <View style={styles.separator} />
+
+                  <View style={styles.userDescription}>
+                    <Text style={styles.userTextDescription}>
+                      Total Chickens
+                    </Text>
+                    <Text style={styles.userTextDescription}>34</Text>
+                  </View>
+
+                  <View style={styles.separator} />
+
+                  <View style={styles.userDescription}>
+                    <Text style={styles.userTextDescription}>
+                      Sick Chickens
+                    </Text>
+                    <Text style={styles.userTextDescription}>23</Text>
+                  </View>
+
+                  <View style={styles.separator} />
+
+                  <View style={styles.userDescription}>
+                    <Text style={styles.userTextDescription}>
+                      Dead Chickens
+                    </Text>
+                    <Text style={styles.userTextDescription}>12</Text>
+                  </View>
+
+                  <View style={styles.separator} />
+
+                  <View style={styles.userDescription}>
+                    <Text style={styles.userTextDescription}>
+                      Registered At
+                    </Text>
+                    <Text style={styles.userTextDescription}>
+                      {formatDate(selectedCase.casePersonalInfo.createdAt)}
+                    </Text>
+                  </View>
+
+                  <View style={styles.separator} />
+
+                  <View style={styles.userDescriptionRemark}>
+                    <Text style={styles.userTextDescriptionRemark}>
+                      Remarks
+                    </Text>
+                    <Text style={styles.userTextDescription}>
+                    Review the information of the farmer and the reported chicken status.
+                    </Text>
+                  </View>
+
+
+
+                </>
+              ) : (
+                <Text>No case data available</Text>
+              )}
+
+              <View style={styles.buttonContainer2}>
+                <TouchableOpacity onPress={() => toggleFirstModal()}>
+                  <View style={styles.cancelButton}>
+                    <Text style={styles.cancelButtonText}>cancel</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </View>
+        </Modal>
       </View>
     </View>
   );
@@ -449,8 +387,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     gap: 10,
   },
-
- 
 
   buttonWithIconText: {
     fontSize: 15,
@@ -501,7 +437,6 @@ const styles = StyleSheet.create({
     paddingLeft: -40,
     marginHorizontal: 10,
     borderRadius: 5,
-   
   },
 
   continersGraber: {
@@ -541,7 +476,102 @@ const styles = StyleSheet.create({
     borderColor: "#d7e3fc",
   },
 
+  //modal
 
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
+    width: "100%",
+    height: "90%",
+    marginTop: "100%",
+  },
+
+  //modal content
+
+  modalHeader: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modalHeaderText: {
+    fontSize: windowHeight / 50,
+    fontWeight: "600",
+    color: Colors.lightBlue,
+  },
+
+  modalSubHeader: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+  },
+
+  modalSubHeaderText: {
+    fontSize: windowHeight / 50,
+    fontWeight: "500",
+    color: Colors.dark,
+  },
+
+  userDescription: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "space-between",
+    marginTop: 20,
+  },
+
+  userTextDescription: {
+    fontSize: windowHeight / 55,
+    color: Colors.gray,
+  },
+
+  modalHeader2: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 15,
+  },
+
+  modalSubHeader2: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+  },
+
+  buttonContainer2: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+
+  cancelButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: windowHeight * 0.05,
+    width: windowWidth * 0.39,
+    backgroundColor: Colors.solidWhite,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.lightBlue,
+    marginTop: 10,
+  },
+
+  cancelButtonText: {
+    color: Colors.lightBlue,
+    fontSize: 14,
+    fontWeight: 700,
+  },
+
+
+  userDescriptionRemark:{
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    marginTop: 20,
+    gap:20
+  },
+  userTextDescriptionRemark:{
+    fontSize: windowHeight / 50,
+    color: Colors.gray,
+    fontWeight:600
+  }
 });
 
-export default RoutineCareDT;
+export default ContactInformationDT;

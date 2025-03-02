@@ -4,11 +4,19 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import React from "react";
 import * as LucideIcons from "lucide-react-native";
 import Colors from "../constants/Colors";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { AuthContext } from "../context/context";
+import { useState,useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Dropdown } from "react-native-element-dropdown";
+import apiService from "../screens/apiService/apiService";
+
 
 const IconLucide = ({ name, size = 24, color = "black" }) => {
   const LucideIcon = LucideIcons[name]; // Access the icon dynamically
@@ -21,33 +29,203 @@ const IconLucide = ({ name, size = 24, color = "black" }) => {
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const  Headers = () => {
+
+const Headers = ({onCategoryChange }) => {
+
+
+  //const { signOut } = React.useContext(AuthContext);
   const navigation = useNavigation();
+  const route = useRoute();
+  const [user, setUser] = useState(null);
+
+
+
+  const [focusedField, setFocusedField] = useState(null);
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [value, setValue] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [questions, setQuestions] = useState([]);
+  
+
+
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const data = await apiService.fetchCategories();
+        const formattedCategories = data.map((category) => ({
+          label: category.name,
+          value: category.id,
+        }));
+
+        //console.log("Formatted categories:", formattedCategories); 
+        setCategories(formattedCategories);
+        onCategoryChange(formattedCategories[0].value)
+        setSelectedCategory(formattedCategories[0].value)
+      } catch (error) {
+        //console.error("Error fetching categories:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+
+
+
+
+
+
+  useEffect(() => {
+    const fetchCategoryQuestions = async () => {
+      if (!selectedCategory) return;
+      try {
+        //console.log("Fetching questions for category ID:", selectedCategory);
+        const questionsData = await apiService.fetchQuestions(selectedCategory);
+        //console.log("Fetched Questions:", questionsData);
+        setQuestions(questionsData || []);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    };
+  
+    fetchCategoryQuestions();
+  }, []);
+  
+
+  
+
+
+
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user");
+        //console.log("logged userssss:", storedUser)
+
+        if (storedUser) {
+          setUser(JSON.parse(storedUser)); // Parse and store user data
+        }
+      } catch (error) {
+        console.log("Error retrieving user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+
+
+
   return (
     <View style={styles.mainContainer}>
-
-      <View>
-        <View style={styles.menuHamburger}>
-          <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <IconLucide name="AlignJustify" size={23} color={Colors.solidWhite} />
-          </TouchableOpacity>
+      {route.name !== "Dashboard" ? (
+        <View>
+          <View style={styles.menuHamburger}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <IconLucide
+                name="ChevronLeft"
+                size={23}
+                color={Colors.solidWhite}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
+      ) : (
+
+
+
+
+
+
+
+
+
+
+
+        <View style={styles.CategoryMainContainer}>
+      <View style={styles.Container}>
+        {loading ? (
+          <ActivityIndicator size="large" color={Colors.solidWhite} />
+        ) : (
+          <Dropdown
+            containerStyle={styles.dropdownContainer}
+            style={[
+              styles.filterdropdown,
+              focusedField === "dropDown" && { borderColor: "#0790CF" },
+            ]}
+            selectedTextStyle={styles.selectedTextStyles}
+            inputSearchStyle={styles.inputSearchStyle}
+            data={categories}
+            value={selectedCategory}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder="Switch Categories"
+            PlaceholderTextColor={Colors.solidWhite}
+            onChange={(item) => onCategoryChange(item.value)}
+            onFocus={() => setFocusedField("dropDown")}
+            onBlur={() => setFocusedField(null)}
+            renderRightIcon={() => (
+              <IconLucide
+                name="ArrowLeftRight"
+                size={20}
+                color={Colors.solidWhite}
+              />
+            )}
+          />
+        )}
       </View>
+    </View>
+
+
+
+
+
+
+
+
+      )}
 
       <View style={styles.notificatioinProfileMainContainer}>
-        <TouchableOpacity>
-          <View style={styles.notificationContainer}>
-            <IconLucide name="Bell" size={16} color={Colors.solidWhite} />
-          </View>
-        </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-          <View style={styles.profileContainer}>
-            <Text style={styles.profileText}>IG</Text>
-          </View>
-        </TouchableOpacity>
+      <TouchableOpacity>
+      <View style={styles.notificationContainer}>
+      <IconLucide name="Bell" size={16} color={Colors.solidWhite} />
       </View>
+      </TouchableOpacity> 
 
+        {route.name == "Profile" ? (
+
+
+          {/* <TouchableOpacity onPress={() => signOut()}>
+          <View style={styles.logoutContainer}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </View>
+        </TouchableOpacity> */}
+
+      ) : (
+
+        <TouchableOpacity onPress={() => navigation.navigate("Profile", { userId: user?.id })}>
+        <View style={styles.profileContainer}>
+        <Text style={styles.profileText}>{user?.userName?.slice(0,2).toUpperCase()}</Text>
+        </View>
+        </TouchableOpacity>
+
+
+      )}
+
+
+
+
+      </View>
     </View>
   );
 };
@@ -57,14 +235,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    alignSelf:"center",
-    padding:20,
-    paddingTop:60,
+    alignSelf: "center",
+    padding: 20,
+    paddingTop: 60,
     //marginTop: 20,
     width: windowWidth,
-    height: 90,
-    backgroundColor:Colors.Green,
-   
+    height: 110,
+    backgroundColor: Colors.Green,
   },
 
   notificationContainer: {
@@ -72,7 +249,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: Colors.lightGray,
+    borderColor: Colors.solidWhite,
     width: 28,
     height: 28,
   },
@@ -86,12 +263,31 @@ const styles = StyleSheet.create({
     borderColor: Colors.solidWhite,
     width: 28,
     height: 28,
+    
   },
 
   profileText: {
-    fontSize: 17,
+    fontSize: windowHeight / 55,
     color: Colors.solidWhite,
   },
+
+  logoutContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.Green,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: Colors.solidWhite,
+    width: 60,
+    height: 28,
+    
+  },
+
+  logoutText: {
+    fontSize: windowHeight / 55,
+    color: Colors.solidWhite,
+  },
+  
 
   menuHamburger: {
     justifyContent: "center",
@@ -102,9 +298,14 @@ const styles = StyleSheet.create({
 
   notificatioinProfileMainContainer:{
     flexDirection:"row",
-    justifyContent:"center",
     gap:10
   }
+
+
+
+
+
+  
 });
 
 export default Headers;

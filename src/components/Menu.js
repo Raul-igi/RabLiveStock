@@ -5,99 +5,100 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Colors from "../constants/Colors";
 import * as LucideIcons from "lucide-react-native";
 import { BlurView } from "expo-blur";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const IconLucide = ({ name, size = 24, color = "black" }) => {
-  const LucideIcon = LucideIcons[name]; // Access the icon dynamically
-  if (!LucideIcon) {
-    return null; // Handle cases where the icon name is incorrect
-  }
+  const LucideIcon = LucideIcons[name];
+  if (!LucideIcon) return null;
   return <LucideIcon size={size} color={color} />;
 };
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("screen").height;
 
-const Menu = ({ Navigation }) => {
-  const [focusedField, setFocusedField] = useState(null);
+const Menu = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const [focusedField, setFocusedField] = useState(route.name); //Set initial focus based on the current route
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("state", () => {
+      setFocusedField(route.name); //Update focusedField whenever navigation changes
+    });
+
+    return unsubscribe;
+  }, [navigation, route]); //Depend on navigation and route to track changes
 
   return (
     <View style={styles.container}>
-      <BlurView
-        intensity={10}
-        tint="light"
-        experimentalBlurMethod="dynamicallyColoredBackdrop"
-        style={styles.menuMainContainer}
-      >
-        <TouchableOpacity onPress={() => setFocusedField("CircleUser")}>
+
+    
+
+      <BlurView intensity={70} tint="light" style={styles.menuMainContainer}>
+
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+
+          <View style={styles.iconContainer1}>
+            <IconLucide
+              name="LayoutDashboard"
+              size={23}
+              color={focusedField === "Dashboard" ? "#0790CF" : "black"}
+            />
+            <Text style={{ color: focusedField === "Dashboard" ? "#0790CF" : "black" }}>
+              Profile
+            </Text>
+          </View>
+
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate("ContactInformation")}>
+
+          <View style={styles.iconContainer2}>
+            <IconLucide
+              name="Stethoscope"
+              size={23}
+              color={focusedField === "PatientInformation" ? "#0790CF" : "black"}
+            />
+            <Text style={{ color: focusedField === "PatientInformation" ? "#0790CF" : "black" }}>
+              Contact Info
+            </Text>
+          </View>
+
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate("OfflineData")}>
+
+          <View style={styles.iconContainer3}>
+            <IconLucide
+              name="WifiOff"
+              size={23}
+              color={focusedField === "OfflineData" ? "#0790CF" : "black"}
+            />
+            <Text style={{ color: focusedField === "OfflineData" ? "#0790CF" : "black" }}>
+              Offline Data
+            </Text>
+          </View>
+
+        </TouchableOpacity>
+
+        {/* <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
           <View style={styles.iconContainer}>
             <IconLucide
               name="CircleUser"
               size={23}
-              color={focusedField === "CircleUser" ? "#3E9A32" : "black"}
+              color={focusedField === "Profile" ? "#0790CF" : "black"}
             />
-            <Text
-              style={{
-                color: focusedField === "CircleUser" ? "#3E9A32" : "black",
-              }}
-            >
+            <Text style={{ color: focusedField === "Profile" ? "#0790CF" : "black" }}>
               Profile
             </Text>
           </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => setFocusedField("LayoutDashboard")}>
-          <View style={styles.iconContainer}>
-            <IconLucide
-              name="WifiOff"
-              size={23}
-              color={focusedField === "LayoutDashboard" ? "#3E9A32" : "black"}
-            />
-            <Text
-              style={{
-                color: focusedField === "LayoutDashboard" ? "#3E9A32" : "black",
-              }}
-            >
-              Offline Data
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => setFocusedField("Stethoscope")}>
-          <View style={styles.iconContainer}>
-            <IconLucide
-              name="Stethoscope"
-              size={23}
-              color={focusedField === "Stethoscope" ? "#3E9A32" : "black"}
-            />
-            <Text
-              style={{
-                color: focusedField === "Stethoscope" ? "#3E9A32" : "black",
-              }}
-            >
-              Routine Care
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => setFocusedField("User")}>
-          <View style={styles.iconContainer}>
-            <IconLucide
-              name="User"
-              size={23}
-              color={focusedField === "User" ? "#3E9A32" : "black"}
-            />
-            <Text
-              style={{ color: focusedField === "User" ? "#3E9A32" : "black" }}
-            >
-              User Account
-            </Text>
-          </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </BlurView>
+
     </View>
   );
 };
@@ -106,30 +107,51 @@ const styles = StyleSheet.create({
   container: {
     width: windowWidth,
     position: "absolute",
-    top: windowHeight * 0.90,
-    flexDirection:'row',
-    justifyContent:'center'
+    top: windowHeight * 0.9,
+    flexDirection: "row",
+    justifyContent: "center",
   },
 
   menuMainContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "space-between",
     position: "absolute",
+    marginHorizontal:30,
     width: windowWidth * 0.94,
     height: windowHeight * 0.07,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: Colors.Green,
-    gap: 20,
-    overflow: "hidden", 
+    borderColor: Colors.lightBlue,
+    gap: 50,
+    overflow: "hidden",
+    backgroundColor:"#edede9",
+    //backgroundColor:"yellow"
+
+    
   },
 
-  iconContainer: {
+  iconContainer1: {
     justifyContent: "center",
     alignItems: "center",
     gap: 7,
-    
+    //backgroundColor:"red",
+    //width:"60",
+    //marginRight:50
+  },
+
+  iconContainer2: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 7,
+   // backgroundColor:"red"
+  },
+
+  iconContainer3: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 7,
+    //backgroundColor:"red"
   },
 });
 

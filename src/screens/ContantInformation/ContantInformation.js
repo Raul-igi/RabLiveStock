@@ -9,7 +9,7 @@ import {
   Keyboard,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Colors from "../../constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -18,6 +18,7 @@ import Headers from "../../components/Headers";
 import { Dropdown } from "react-native-element-dropdown";
 import ContactInformationDT from "./ContantInformationDT"
 import * as LucideIcons from "lucide-react-native";
+import apiService from "../apiService/apiService";
 
 const IconLucide = ({ name, size = 24, color = "black" }) => {
   const LucideIcon = LucideIcons[name];
@@ -51,6 +52,32 @@ const ContactInformation = () => {
   const navigation = useNavigation();
   const [filtered, setFiltered] = useState("");
   const [value, setValue] = useState(null);
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  
 
